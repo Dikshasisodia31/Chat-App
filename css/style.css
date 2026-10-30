@@ -1,0 +1,229 @@
+/* ---------- Reset & variables ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0b141a;
+    --bg-pattern: #0f1c24;
+    --bar: #202c33;
+    --input-bg: #2a3942;
+    --bubble-sent: #005c4b;
+    --bubble-received: #202c33;
+    --text: #e9edef;
+    --text-muted: #8696a0;
+    --accent: #00a884;
+    --accent-hover: #06cf9c;
+    --radius: 14px;
+    --send-height: 68px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Message area ---------- */
+.container {
+    position: fixed;
+    inset: 0 0 var(--send-height) 0;
+    overflow-y: auto;
+    padding: 20px max(16px, calc((100% - 820px) / 2));
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    scroll-behavior: smooth;
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(0, 168, 132, 0.06), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(83, 189, 235, 0.05), transparent 40%),
+        radial-gradient(var(--bg-pattern) 1px, transparent 1px);
+    background-size: auto, auto, 22px 22px;
+}
+
+/* Custom scrollbar */
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+.container::-webkit-scrollbar-thumb {
+    background: #2f3f48;
+    border-radius: 8px;
+}
+.container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ---------- Message bubbles ---------- */
+.message {
+    position: relative;
+    max-width: min(75%, 520px);
+    padding: 8px 14px;
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    animation: pop-in 0.18s ease-out;
+}
+
+/* Sent by me */
+.message.right {
+    align-self: flex-end;
+    background: var(--bubble-sent);
+    border-radius: var(--radius) var(--radius) 2px var(--radius);
+}
+
+/* Received from others */
+.message.left {
+    align-self: flex-start;
+    background: var(--bubble-received);
+    border-radius: var(--radius) var(--radius) var(--radius) 2px;
+}
+
+/* Little tails */
+.message.right::after,
+.message.left::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 10px;
+    height: 12px;
+}
+.message.right::after {
+    right: -6px;
+    background: var(--bubble-sent);
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+.message.left::after {
+    left: -6px;
+    background: var(--bubble-received);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+/* Join / leave notices (optional: use class "message center") */
+.message.center {
+    align-self: center;
+    background: rgba(32, 44, 51, 0.9);
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    box-shadow: none;
+}
+.message.center::after {
+    display: none;
+}
+
+/* Optional sender name inside bubble: <span class="name">Rahul</span> */
+.message .name {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #53bdeb;
+    margin-bottom: 2px;
+}
+
+@keyframes pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ---------- Send bar ---------- */
+.send {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--send-height);
+    background: var(--bar);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 max(12px, calc((100% - 820px) / 2));
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#send-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+#messageInp {
+    flex: 1;
+    height: 46px;
+    padding: 0 20px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+#messageInp::placeholder {
+    color: var(--text-muted);
+}
+
+#messageInp:focus {
+    border-color: var(--accent);
+    background: #2f414b;
+}
+
+.btn {
+    height: 46px;
+    padding: 0 26px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 14px rgba(0, 168, 132, 0.35);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+    :root {
+        --send-height: 62px;
+    }
+    .message {
+        max-width: 82%;
+        font-size: 14.5px;
+    }
+    .btn {
+        padding: 0 18px;
+    }
+}
